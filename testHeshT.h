@@ -41,15 +41,15 @@ struct HashTable
 };
 
 
-int hashFunc(int key)
+int hashFunc(int key, Airopot *air)
 {
 	return (key << 1) % 10 ;
 }
 
 void insertInHashTable(Airopot air, HashTable &hashTable)
 {
-	int id = hashFunc(air.Key);
-	while (hashTable.Keys[id].Key != DELETE)
+	int id = hashFunc(air.Key, hashTable.Keys);
+	while (hashTable.Keys[id].openKey)
 	{
 		id++;
 		if (id < hashTable.M)
@@ -63,7 +63,7 @@ void insertInHashTable(Airopot air, HashTable &hashTable)
 
 void deleteInHashTable(Airopot air, HashTable &hashtable)
 {
-	int id = hashFunc(air.Key);
+	int id = hashFunc(air.Key, hashtable.Keys);
 	while (hashtable.Keys[id].Key != air.Key)
 	{
 		id++;
@@ -79,9 +79,9 @@ void deleteInHashTable(Airopot air, HashTable &hashtable)
 
 }
 
-int findInHashTable(HashTable hashtable, int key)
+int findInHashTable(HashTable &hashtable, int key)
 {
-	int id = hashFunc(key);
+	int id = hashFunc(key, hashtable.Keys);
 	while (!hashtable.Keys[id].delKey && !hashtable.Keys[id].openKey && (hashtable.Keys[id].Key != key))
 	{
 		id++;
@@ -104,7 +104,7 @@ void rehashTable(HashTable &hashtable)
 	{
 		if(hashtable.Keys[i].Key != 0)
 		{
-			int newId = hashFunc(hashtable.Keys[i].Key);
+			int newId = hashFunc(hashtable.Keys[i].Key, hashtable.Keys);
 			while (reHash[newId].Key != 0)
 			{
 				newId = newId + 1;

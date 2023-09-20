@@ -8,8 +8,12 @@ int main()
     setlocale(LC_ALL, "Russian");
     const char* txt_name = "AiroportInText.txt";
     const char* binary_name = "AiroportInBin.dat";
+    ifstream txt(txt_name);
+    ofstream bin(binary_name, ios::binary, ios::in);
     HashTable hash(100, 10);
     int x = 1;
+    txt_to_binary(txt, bin);
+    bin.close();
     while (x != 0)
     {
         cin >> x;
@@ -22,9 +26,8 @@ int main()
             break;
         }
         case 2: {
-            ofstream tt(txt_name, ios::out);
             ifstream bn(binary_name, ios::binary | ios::in);
-            binary_to_txt(bn, tt);
+            findKey(7, hash, bn);
             bn.close();
             break;
         }

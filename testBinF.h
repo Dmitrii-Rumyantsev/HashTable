@@ -6,16 +6,18 @@ void binaryToHashTable(ifstream& bin, HashTable &hashtable)
 {
     AiropotBin air;
     bin.read((char*)&air, sizeof(AiropotBin));
-    while (bin.read((char*)&air, sizeof(AiropotBin)))
+    while (!bin.eof())
     {
         Airopot toHash(air.airopotOut, air.numberFligth, air.dataIn, air.timeIn, air.hoursDelay);
         insertInHashTable(toHash, hashtable);
+        bin.read((char*)&air, sizeof(AiropotBin));
     }
 
     if (!bin.eof() && bin.good())
     {
         cout << "Error reading from binary file." << endl;
     }
+    bin.close();
 }
 
 void deleteBinaryAndHash(int n, fstream& bin, HashTable& hashtable, Airopot air) {
