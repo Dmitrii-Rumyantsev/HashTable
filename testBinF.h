@@ -21,10 +21,7 @@ void binaryToHashTable(ifstream& bin, HashTable &hashtable)
 }
 
 void deleteBinaryAndHash(int n, fstream& bin, HashTable& hashtable, Airopot air) {
-    cout << "Удаление по ключу в хэш-таблице :";
-    deleteInHashTable(air, hashtable);
-    cout << "\nУдаление по ключу в бинарном файле :";
-    delete_bin(bin, n);
+    deleteInHashTable(n, hashtable);
     cout << endl;
     if (!bin.eof() && bin.fail())
     {
@@ -35,9 +32,8 @@ void deleteBinaryAndHash(int n, fstream& bin, HashTable& hashtable, Airopot air)
 
 void findKey(int key, HashTable &hashtable, ifstream &bin)
 {
-    cout << "Поиск по ключу в хэш-таблице :";
-    findInHashTable(hashtable, key);
-    cout << "\nПоиск по ключу в бинарном файле :";
+
+    cout << "\nHash :\n";
     key_bin(bin, key);
     cout << endl;
     if (!bin.eof() && bin.fail())

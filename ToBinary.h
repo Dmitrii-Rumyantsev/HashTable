@@ -1,4 +1,4 @@
-#pragma once
+
 #include "iostream"
 #include "fstream"
 #include <string>
@@ -43,7 +43,7 @@ void binary_to_txt(ifstream& bin, ofstream& txt)
 
     if (!bin.eof() && bin.fail())
     {
-        // Обработайте ошибку чтения из файла
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         cout << "Error reading from binary file." << endl;
     }
 }
@@ -61,7 +61,6 @@ void print_binnary(ifstream& bin)
 
     if (bin.fail() && !bin.eof())
     {
-        // Обработайте ошибку чтения из файла
         cout << "Error reading from binary file at line " << lineNumber << "." << endl;
     }
     bin.close();
@@ -77,7 +76,7 @@ void key_bin(ifstream& bin, int n)
         cout << airs.airopotOut << endl << airs.numberFligth << endl << airs.dataIn << endl << airs.timeIn << endl << airs.hoursDelay;
     }
     else {
-        cout << "Ошибка чтения записи из бинарного файла." << endl;
+        cout << "пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ." << endl;
     }
 }
 

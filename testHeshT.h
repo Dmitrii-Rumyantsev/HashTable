@@ -14,7 +14,11 @@ struct Airopot
 	string airopotOut;
 	int numberFligth, dataIn, timeIn, hoursDelay;
 	bool openKey, delKey;
-	Airopot(){}
+	Airopot(){
+		this->openKey = true;
+		this->delKey = false;
+
+	}
 	Airopot(string airopotOut, int numberFligth, int dataIn, int timeIn, int hoursDelay)
 	{
 		this->Key = numberFligth;
@@ -41,47 +45,49 @@ struct HashTable
 };
 
 
-int hashFunc(int key, Airopot *air)
+int hashFunc(int key, int M)
 {
-	return (key << 1) % 10 ;
+	return ((key << 1) % M );
 }
 
 void insertInHashTable(Airopot air, HashTable &hashTable)
 {
-	int id = hashFunc(air.Key, hashTable.Keys);
-	while (hashTable.Keys[id].openKey)
-	{
-		id++;
-		if (id < hashTable.M)
-		{
-			hashTable.Keys[id] = air;
-			hashTable.N = hashTable.N + 1;
-			hashTable.Keys[id].openKey = false;
-		}
-	}
+    int id = hashFunc(air.Key, hashTable.M);
+    while (!hashTable.Keys[id].openKey)
+    {
+        id++;
+        if (id >= hashTable.M)
+        {
+            return; // Нет свободных ячеек для вставки
+        }
+    }
+    hashTable.Keys[id] = air;
+    hashTable.N = hashTable.N + 1;
+    hashTable.Keys[id].openKey = false;
 }
 
-void deleteInHashTable(Airopot air, HashTable &hashtable)
+
+void deleteInHashTable(int key, HashTable &hashTable)
 {
-	int id = hashFunc(air.Key, hashtable.Keys);
-	while (hashtable.Keys[id].Key != air.Key)
+	int id = hashFunc(key, hashTable.M);
+	while (hashTable.Keys[id].Key != key)
 	{
 		id++;
-		if(id >= hashtable.M)
+		if(id >= hashTable.M)
 		{
 			return;
 		}
 	}
-	hashtable.Keys[id].Key = DELETE;
-	hashtable.N = hashtable.N - 1;
-	hashtable.Keys[id].delKey = true;
-	hashtable.Keys[id].openKey = true;
+	hashTable.Keys[id].Key = DELETE;
+	hashTable.N = hashTable.N - 1;
+	hashTable.Keys[id].delKey = true;
+	hashTable.Keys[id].openKey = true;
 
 }
 
 int findInHashTable(HashTable &hashtable, int key)
 {
-	int id = hashFunc(key, hashtable.Keys);
+	int id = hashFunc(key, hashtable.M);
 	while (!hashtable.Keys[id].delKey && !hashtable.Keys[id].openKey && (hashtable.Keys[id].Key != key))
 	{
 		id++;
@@ -104,7 +110,7 @@ void rehashTable(HashTable &hashtable)
 	{
 		if(hashtable.Keys[i].Key != 0)
 		{
-			int newId = hashFunc(hashtable.Keys[i].Key, hashtable.Keys);
+			int newId = hashFunc(hashtable.Keys[i].Key, hashtable.M);
 			while (reHash[newId].Key != 0)
 			{
 				newId = newId + 1;
@@ -115,4 +121,24 @@ void rehashTable(HashTable &hashtable)
 	delete[] hashtable.Keys;
 	hashtable.Keys = reHash;
 	hashtable.M = newM;
+}
+void printHashTable(const HashTable &hashtable)
+{
+    cout << "Hash Table Contents:" << endl;
+    for (int i = 0; i < hashtable.M; i++)
+    {
+        if (!hashtable.Keys[i].openKey && !hashtable.Keys[i].delKey)
+        {
+            cout << "Index " << i << ": Key=" << hashtable.Keys[i].Key << ", AirportOut=" << hashtable.Keys[i].airopotOut << ", NumberFlight=" << hashtable.Keys[i].numberFligth << ", DataIn=" << hashtable.Keys[i].dataIn << ", TimeIn=" << hashtable.Keys[i].timeIn << ", HoursDelay=" << hashtable.Keys[i].hoursDelay << endl;
+        }
+        else if (hashtable.Keys[i].delKey)
+        {
+            cout << "Index " << i << ": DELETED" << endl;
+        }
+        else
+        {
+            cout << "Index " << i << ": EMPTY" << endl;
+        }
+    }
+    cout << "Total Entries: " << hashtable.N << endl;
 }
