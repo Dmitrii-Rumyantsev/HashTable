@@ -8,7 +8,7 @@ using namespace std;
 
 struct AiropotBin
 {
-    string airopotOut;
+    char airopotOut[20];
     int numberFligth, dataIn, timeIn, hoursDelay;
 };
 
@@ -17,7 +17,8 @@ void txt_to_binary(ifstream& txt, ofstream& bin)
     AiropotBin air;
     while (!txt.eof())
     {
-        getline(txt, air.airopotOut);
+        txt >> air.airopotOut;
+        txt.get();
         txt >> air.numberFligth;
         txt.get();
         txt >> air.dataIn;
@@ -25,11 +26,8 @@ void txt_to_binary(ifstream& txt, ofstream& bin)
         txt >> air.timeIn;
         txt.get();
         txt >> air.hoursDelay;
-        txt.get();
         bin.write((char*)&air, sizeof(AiropotBin));
     }
-    txt.close();
-    bin.close();
 }
 
 void binary_to_txt(ifstream& bin, ofstream& txt)
@@ -63,7 +61,6 @@ void print_binnary(ifstream& bin)
     {
         cout << "Error reading from binary file at line " << lineNumber << "." << endl;
     }
-    bin.close();
     return;
 }
 
@@ -96,6 +93,5 @@ void delete_bin(fstream& bin, int n)
             bin.seekg(key - 2, ios::beg);
         }
     }
-    bin.close();
 }
 

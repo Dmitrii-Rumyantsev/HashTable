@@ -50,6 +50,11 @@ int hashFunc(int key, int M)
 	return ((key << 1) % M );
 }
 
+int hashFuncForRehash(int key, int M)
+{
+	return (key % M);
+}
+
 void insertInHashTable(Airopot air, HashTable &hashTable)
 {
     int id = hashFunc(air.Key, hashTable.M);
@@ -67,32 +72,29 @@ void insertInHashTable(Airopot air, HashTable &hashTable)
 }
 
 
-void deleteInHashTable(int key, HashTable &hashTable)
+void deleteInHashTable(int key, HashTable & hashtable)
 {
-	int id = hashFunc(key, hashTable.M);
-	while (hashTable.Keys[id].Key != key)
+	int id = hashFunc(key, hashtable.M);
+	while (hashtable.Keys[id].Key != key && id < hashtable.M)
 	{
 		id++;
-		if(id >= hashTable.M)
-		{
-			return;
-		}
 	}
-	hashTable.Keys[id].Key = DELETE;
-	hashTable.N = hashTable.N - 1;
-	hashTable.Keys[id].delKey = true;
-	hashTable.Keys[id].openKey = true;
+	cout << "DELETE: " << hashtable.Keys[id].airopotOut << " " << hashtable.Keys[id].numberFligth << " " << hashtable.Keys [id] .dataIn << " " << hashtable.Keys[id].timeIn << " " << hashtable.Keys[id].hoursDelay << "\n";
+	hashtable.Keys[id].Key = DELETE;
+	hashtable.N = hashtable.N - 1;
+	hashtable.Keys[id].delKey = true;
+	hashtable.Keys[id].openKey = true;
 
 }
 
 int findInHashTable(HashTable &hashtable, int key)
 {
 	int id = hashFunc(key, hashtable.M);
-	while (!hashtable.Keys[id].delKey && !hashtable.Keys[id].openKey && (hashtable.Keys[id].Key != key))
+	while (hashtable.Keys[id].Key != key && id < hashtable.M)
 	{
 		id++;
 	}
-	if(hashtable.Keys[id].delKey && hashtable.Keys[id].openKey)
+	if(hashtable.Keys[id].delKey && !hashtable.Keys[id].openKey)
 	{
 		return -1;
 	}
@@ -102,26 +104,31 @@ int findInHashTable(HashTable &hashtable, int key)
 	}
 }
 
-void rehashTable(HashTable &hashtable)
+void rehashTable(HashTable& hashtable)
 {
 	int newM = hashtable.M * 2;
-	Airopot* reHash = new Airopot[newM];
+	HashTable reHash(newM, hashtable.N);
 	for (int i = 0; i < hashtable.M; i++)
 	{
-		if(hashtable.Keys[i].Key != 0)
+		if (hashtable.Keys[i].Key >= 0)
 		{
-			int newId = hashFunc(hashtable.Keys[i].Key, hashtable.M);
-			while (reHash[newId].Key != 0)
+			int newId = hashFuncForRehash(hashtable.Keys[i].Key, newM);
+			while (!reHash.Keys[newId].openKey)
 			{
-				newId = newId + 1;
+				newId++;
+				if (newId >= newM)
+				{
+					return; // Нет свободных ячеек для вставки
+				}
 			}
-			reHash[newId] = hashtable.Keys[i];
+			reHash.Keys[newId] = hashtable.Keys[i];
+			reHash.Keys[newId].openKey = false;
 		}
 	}
-	delete[] hashtable.Keys;
-	hashtable.Keys = reHash;
+	hashtable = reHash;
 	hashtable.M = newM;
 }
+
 void printHashTable(const HashTable &hashtable)
 {
     cout << "Hash Table Contents:" << endl;
@@ -140,5 +147,4 @@ void printHashTable(const HashTable &hashtable)
             cout << "Index " << i << ": EMPTY" << endl;
         }
     }
-    cout << "Total Entries: " << hashtable.N << endl;
 }
